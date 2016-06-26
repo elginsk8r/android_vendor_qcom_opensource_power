@@ -68,7 +68,6 @@
 #endif
 #endif
 
-#define ARRAY_SIZE(x) (sizeof((x))/sizeof((x)[0]))
 #define LINE_SIZE 128
 
 #ifdef LEGACY_STATS
