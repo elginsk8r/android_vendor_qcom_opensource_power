@@ -115,6 +115,18 @@ ifeq ($(TARGET_USES_INTERACTION_BOOST),true)
     LOCAL_CFLAGS += -DINTERACTION_BOOST
 endif
 
+ifeq ($(TARGET_HAS_LEGACY_POWER_STATS),true)
+    LOCAL_CFLAGS += -DLEGACY_STATS
+endif
+
+ifeq ($(TARGET_HAS_NO_WLAN_STATS),true)
+    LOCAL_CFLAGS += -DNO_WLAN_STATS
+endif
+
+ifneq ($(TARGET_WLAN_POWER_STAT),)
+    LOCAL_CFLAGS += -DWLAN_POWER_STAT=\"$(TARGET_WLAN_POWER_STAT)\"
+endif
+
 LOCAL_MODULE := android.hardware.power@1.2-service-qti
 LOCAL_INIT_RC := android.hardware.power@1.2-service-qti.rc
 LOCAL_MODULE_TAGS := optional
