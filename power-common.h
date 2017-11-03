@@ -51,6 +51,28 @@ extern "C" {
 
 #include <hardware/power.h>
 
+#ifdef LEGACY_STATS
+enum platform_param_id {
+    VLOW_COUNT = 0,
+    ACCUMULATED_VLOW_TIME,
+    VMIN_COUNT,
+    ACCUMULATED_VMIN_TIME,
+    RPM_PARAM_COUNT,
+
+    XO_ACCUMULATED_DURATION_APSS = RPM_PARAM_COUNT,
+    XO_COUNT_APSS,
+    XO_ACCUMULATED_DURATION_MPSS,
+    XO_COUNT_MPSS,
+    XO_ACCUMULATED_DURATION_ADSP,
+    XO_COUNT_ADSP,
+    XO_ACCUMULATED_DURATION_SLPI,
+    XO_COUNT_SLPI,
+
+    //Don't add any lines after that line
+    PLATFORM_PARAM_COUNT
+};
+#endif
+
 enum stats_type {
     //Platform Stats
     RPM_MODE_XO = 0,
@@ -67,17 +89,21 @@ enum stats_type {
     VOTER_SPSS,
     MAX_PLATFORM_STATS,
 
+#ifndef NO_WLAN_STATS
     //WLAN Stats
     WLAN_POWER_DEBUG_STATS = 0,
     MAX_WLAN_STATS,
+#endif
 };
 
+#ifndef NO_WLAN_STATS
 enum subsystem_type {
     SUBSYSTEM_WLAN = 0,
 
     //Don't add any lines after this line
     SUBSYSTEM_COUNT
 };
+#endif
 
 enum wlan_sleep_states {
     WLAN_STATE_ACTIVE = 0,
@@ -100,7 +126,11 @@ enum wlan_power_params {
 #define PLATFORM_SLEEP_MODES_COUNT RPM_MODE_MAX
 
 #define MAX_RPM_PARAMS 2
+#ifdef LEGACY_STATS
+#define XO_VOTERS 4
+#else
 #define XO_VOTERS (MAX_PLATFORM_STATS - XO_VOTERS_START)
+#endif
 #define VMIN_VOTERS 0
 
 struct stat_pair {
@@ -122,7 +152,9 @@ void power_hint(power_hint_t hint, void *data);
 void set_interactive(int on);
 void set_feature(feature_t feature, int state);
 int extract_platform_stats(uint64_t *list);
+#ifndef NO_WLAN_STATS
 int extract_wlan_stats(uint64_t *list);
+#endif
 
 #define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
 
