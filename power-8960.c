@@ -64,6 +64,74 @@ static bool is_target_8064(void) {
     return is_8064;
 }
 
+static int current_power_profile = PROFILE_BALANCED;
+
+// clang-format off
+static int profile_high_performance_8960[] = {
+    CPUS_ONLINE_MIN_2,
+};
+
+static int profile_high_performance_8064[] = {
+    CPUS_ONLINE_MIN_4,
+};
+
+static int profile_power_save_8960[] = {
+    /* Don't do anything for now */
+};
+
+static int profile_power_save_8064[] = {
+    CPUS_ONLINE_MAX_LIMIT_2,
+};
+// clang-format on
+
+#ifdef INTERACTION_BOOST
+int get_number_of_profiles() {
+    return 3;
+}
+#endif
+
+static int set_power_profile(void* data) {
+    int profile = data ? *((int*)data) : 0;
+    int ret = -EINVAL;
+    const char* profile_name = NULL;
+
+    if (profile == current_power_profile) return 0;
+
+    ALOGV("%s: Profile=%d", __func__, profile);
+
+    if (current_power_profile != PROFILE_BALANCED) {
+        undo_hint_action(DEFAULT_PROFILE_HINT_ID);
+        ALOGV("%s: Hint undone", __func__);
+        current_power_profile = PROFILE_BALANCED;
+    }
+
+    if (profile == PROFILE_POWER_SAVE) {
+        int* resource_values = is_target_8064() ? profile_power_save_8064 : profile_power_save_8960;
+
+        ret = perform_hint_action(DEFAULT_PROFILE_HINT_ID, resource_values,
+                                  ARRAY_SIZE(resource_values));
+        profile_name = "powersave";
+
+    } else if (profile == PROFILE_HIGH_PERFORMANCE) {
+        int* resource_values =
+                is_target_8064() ? profile_high_performance_8064 : profile_high_performance_8960;
+
+        ret = perform_hint_action(DEFAULT_PROFILE_HINT_ID, resource_values,
+                                  ARRAY_SIZE(resource_values));
+        profile_name = "performance";
+
+    } else if (profile == PROFILE_BALANCED) {
+        ret = 0;
+        profile_name = "balanced";
+    }
+
+    if (ret == 0) {
+        current_power_profile = profile;
+        ALOGD("%s: Set %s mode", __func__, profile_name);
+    }
+    return ret;
+}
+
 static int process_video_encode_hint(void* metadata) {
     char governor[80];
     struct video_encode_metadata_t video_encode_metadata;
@@ -142,6 +210,17 @@ static int process_video_decode_hint(void* metadata) {
 
 int power_hint_override(power_hint_t hint, void* data) {
     int ret_val = HINT_NONE;
+
+    if (hint == POWER_HINT_SET_PROFILE) {
+        if (set_power_profile(data) < 0) ALOGE("Setting power profile failed. perfd not started?");
+        return HINT_HANDLED;
+    }
+
+    // Skip other hints in high/low power modes
+    if (current_power_profile == PROFILE_POWER_SAVE ||
+        current_power_profile == PROFILE_HIGH_PERFORMANCE) {
+        return HINT_HANDLED;
+    }
 
     switch (hint) {
         case POWER_HINT_VIDEO_ENCODE:
