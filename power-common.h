@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2013, 2018-2019 The Linux Foundation. All rights reserved.
+ * Copyright (C) 2017-2019 The LineageOS Project
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -136,6 +137,14 @@ struct stat_pair {
 
 enum CPU_GOV_CHECK { CPU0 = 0, CPU1 = 1, CPU2 = 2, CPU3 = 3 };
 
+enum {
+    PROFILE_POWER_SAVE = 0,
+    PROFILE_BALANCED,
+    PROFILE_HIGH_PERFORMANCE,
+    PROFILE_BIAS_POWER,
+    PROFILE_BIAS_PERFORMANCE
+};
+
 void power_init(void);
 void power_hint(power_hint_t hint, void* data);
 void set_interactive(int on);
@@ -144,10 +153,14 @@ int extract_platform_stats(uint64_t *list);
 #ifndef NO_WLAN_STATS
 int extract_wlan_stats(uint64_t *list);
 #endif
+int __attribute__((weak)) get_number_of_profiles();
 
 #define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
 #define CHECK_HANDLE(x) ((x) > 0)
 #define UNUSED(x) UNUSED_##x __attribute__((__unused__))
+
+// Custom Evervolv hints
+const static power_hint_t POWER_HINT_SET_PROFILE = (power_hint_t)0x00000111;
 
 #ifdef __cplusplus
 }
