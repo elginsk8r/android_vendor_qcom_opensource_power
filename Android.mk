@@ -13,6 +13,7 @@ LOCAL_SHARED_LIBRARIES := \
     libbase \
     libhidlbase \
     libhidltransport \
+    libhwbinder \
     liblog \
     libutils \
     libxml2
@@ -151,6 +152,10 @@ endif
 
 ifneq ($(TARGET_WLAN_POWER_STAT),)
     LOCAL_CFLAGS += -DWLAN_POWER_STAT=\"$(TARGET_WLAN_POWER_STAT)\"
+endif
+
+ifeq ($(TARGET_ARCH),arm)
+    LOCAL_CFLAGS += -DARCH_ARM_32
 endif
 
 LOCAL_MODULE := android.hardware.power@1.2-service-qti
