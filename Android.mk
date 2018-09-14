@@ -30,6 +30,7 @@ LOCAL_SHARED_LIBRARIES := \
     libhidlbase \
     libhidltransport \
     libhardware \
+    libhwbinder \
     libutils
 
 LOCAL_SRC_FILES := \
@@ -170,6 +171,10 @@ endif
 
 ifeq ($(TARGET_HAS_NO_WLAN_STATS),true)
 LOCAL_CFLAGS += -DNO_WLAN_STATS
+endif
+
+ifeq ($(TARGET_ARCH),arm)
+LOCAL_CFLAGS += -DARCH_ARM_32
 endif
 
 ifeq ($(TARGET_HAS_POWER_PROFILES),true)
