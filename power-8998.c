@@ -53,6 +53,7 @@
 #define CHECK_HANDLE(x) ((x)>0)
 #define NUM_PERF_MODES  3
 
+#ifdef PERF_PROFILES
 static int current_power_profile = PROFILE_BALANCED;
 
 static int profile_high_performance[] = {
@@ -118,6 +119,7 @@ static void set_power_profile(int profile)
 
     current_power_profile = profile;
 }
+#endif
 
 typedef enum {
     NORMAL_MODE       = 0,
@@ -254,6 +256,7 @@ int power_hint_override(power_hint_t hint, void *data)
 {
     int ret_val = HINT_NONE;
 
+#ifdef PERF_PROFILES
     if (hint == POWER_HINT_SET_PROFILE) {
         set_power_profile(*(int32_t *)data);
         return HINT_HANDLED;
@@ -264,6 +267,7 @@ int power_hint_override(power_hint_t hint, void *data)
             current_power_profile == PROFILE_HIGH_PERFORMANCE) {
         return HINT_HANDLED;
     }
+#endif
 
     switch (hint) {
         case POWER_HINT_VIDEO_ENCODE:

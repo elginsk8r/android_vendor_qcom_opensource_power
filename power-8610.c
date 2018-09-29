@@ -48,6 +48,7 @@
 #include "performance.h"
 #include "power-common.h"
 
+#ifdef PERF_PROFILES
 static int current_power_profile = PROFILE_BALANCED;
 
 static int profile_high_performance[] = {
@@ -94,6 +95,7 @@ static void set_power_profile(int profile)
 
     current_power_profile = profile;
 }
+#endif
 
 static int resources_interaction_boost[] = {
     CPUS_ONLINE_MIN_2,
@@ -109,6 +111,7 @@ int power_hint_override(power_hint_t hint, void *data)
     static int s_previous_duration = 0;
     int duration;
 
+#ifdef PERF_PROFILES
     if (hint == POWER_HINT_SET_PROFILE) {
         set_power_profile(*(int32_t *)data);
         return HINT_HANDLED;
@@ -119,6 +122,7 @@ int power_hint_override(power_hint_t hint, void *data)
             current_power_profile == PROFILE_HIGH_PERFORMANCE) {
         return HINT_HANDLED;
     }
+#endif
 
     switch (hint) {
         case POWER_HINT_INTERACTION:
