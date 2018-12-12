@@ -146,6 +146,7 @@ int extract_wlan_stats(uint64_t *list);
 #endif
 
 #define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
+#define CHECK_HANDLE(x) ((x) > 0)
 #define UNUSED(x) UNUSED_##x __attribute__((__unused__))
 
 #ifdef __cplusplus
