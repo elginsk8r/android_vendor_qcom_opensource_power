@@ -77,7 +77,6 @@ static bool is_target_8916(void)
     return is_8916;
 }
 
-#ifdef PERF_PROFILES
 static int current_power_profile = PROFILE_BALANCED;
 
 static int profile_high_performance_8916[3] = {
@@ -152,7 +151,6 @@ static int set_power_profile(int profile)
     }
     return ret;
 }
-#endif
 
 static int resources_interaction_fling_boost[] = {
     ALL_CPUS_PWR_CLPS_DIS,
@@ -214,7 +212,6 @@ int power_hint_override(power_hint_t hint, void *data)
     static int s_previous_duration = 0;
     int duration;
 
-#ifdef PERF_PROFILES
     if (hint == POWER_HINT_SET_PROFILE) {
         if (set_power_profile(*(int32_t *)data) < 0)
             ALOGE("Setting power profile failed. perfd not started?");
@@ -226,7 +223,6 @@ int power_hint_override(power_hint_t hint, void *data)
             current_power_profile == PROFILE_HIGH_PERFORMANCE) {
         return HINT_HANDLED;
     }
-#endif
 
     switch (hint) {
         case POWER_HINT_INTERACTION:

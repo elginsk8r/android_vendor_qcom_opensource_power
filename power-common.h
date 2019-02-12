@@ -53,7 +53,6 @@ enum CPU_GOV_CHECK {
 #define CHECK_HANDLE(x) ((x)>0)
 #define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
 
-#ifdef PERF_PROFILES
 enum {
     PROFILE_POWER_SAVE = 0,
     PROFILE_BALANCED,
@@ -64,4 +63,3 @@ enum {
 
 // Custom Lineage hints
 const static power_hint_t POWER_HINT_SET_PROFILE = (power_hint_t)0x00000111;
-#endif
