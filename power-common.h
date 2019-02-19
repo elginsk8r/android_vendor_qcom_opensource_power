@@ -50,6 +50,7 @@ enum CPU_GOV_CHECK {
     CPU3 = 3
 };
 
+#define CHECK_HANDLE(x) ((x)>0)
 #define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
 
 #ifdef PERF_PROFILES
