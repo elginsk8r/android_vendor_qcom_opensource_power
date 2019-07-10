@@ -94,7 +94,7 @@ int set_interactive_override(int on)
 
 void interaction(int duration, int num_args, int opt_list[]);
 
-int power_hint_override(power_hint_t hint, void *data)
+int power_hint_override(power_hint_t hint, void *UNUSED(data))
 {
     int ret_val = HINT_NONE;
     switch(hint) {
