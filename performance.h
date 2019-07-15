@@ -48,7 +48,12 @@ extern "C" {
 enum LAUNCH_BOOST_TYPE {
     LAUNCH_BOOST_V1 = 1,
     LAUNCH_BOOST_V2 = 2,
-    LAUNCH_BOOST_V3 = 3
+    LAUNCH_BOOST_V3 = 3,
+    LAUNCH_BOOST_V4 = 4
+};
+
+enum {
+    DRAG_BOOST_V1 = 1,
 };
 
 enum SCROLL_BOOST_TYPE {
