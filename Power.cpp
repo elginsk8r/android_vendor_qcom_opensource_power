@@ -29,8 +29,8 @@
 
 #define LOG_TAG "android.hardware.power@1.2-service-qti"
 
-#include <log/log.h>
 #include "Power.h"
+#include <log/log.h>
 #include "power-common.h"
 
 /* RPM runs at 19.2Mhz. Divide by 19200 for msec */
@@ -44,37 +44,35 @@ namespace power {
 namespace V1_2 {
 namespace implementation {
 
+using ::android::hardware::hidl_vec;
+using ::android::hardware::Return;
+using ::android::hardware::Void;
 using ::android::hardware::power::V1_0::Feature;
 using ::android::hardware::power::V1_0::PowerHint;
 using ::android::hardware::power::V1_0::PowerStatePlatformSleepState;
 using ::android::hardware::power::V1_0::Status;
 using ::android::hardware::power::V1_1::PowerStateSubsystem;
-using ::android::hardware::hidl_vec;
-using ::android::hardware::Return;
-using ::android::hardware::Void;
 
 Power::Power() {
     power_init();
 }
 
 Return<void> Power::setInteractive(bool interactive) {
-    set_interactive(interactive ? 1:0);
+    set_interactive(interactive ? 1 : 0);
     return Void();
 }
 
 Return<void> Power::powerHint(PowerHint_1_0 hint, int32_t data) {
-
     power_hint(static_cast<power_hint_t>(hint), data ? (&data) : NULL);
     return Void();
 }
 
-Return<void> Power::setFeature(Feature feature, bool activate)  {
+Return<void> Power::setFeature(Feature feature, bool activate) {
     set_feature(static_cast<feature_t>(feature), activate ? 1 : 0);
     return Void();
 }
 
 Return<void> Power::getPlatformLowPowerStats(getPlatformLowPowerStats_cb _hidl_cb) {
-
     hidl_vec<PowerStatePlatformSleepState> states;
     uint64_t stats[MAX_PLATFORM_STATS * MAX_RPM_PARAMS] = {0};
 #ifndef LEGACY_STATS
@@ -204,7 +202,6 @@ static int get_wlan_low_power_stats(struct PowerStateSubsystem &subsystem) {
 #endif
 
 Return<void> Power::getSubsystemLowPowerStats(getSubsystemLowPowerStats_cb _hidl_cb) {
-
     hidl_vec<PowerStateSubsystem> subsystems;
 #ifndef NO_WLAN_STATS
     int ret;
@@ -225,13 +222,11 @@ done:
 }
 
 Return<void> Power::powerHintAsync(PowerHint_1_0 hint, int32_t data) {
-
     return powerHint(hint, data);
 }
 
 Return<void> Power::powerHintAsync_1_2(PowerHint_1_2 hint, int32_t data) {
-
-    return powerHint(static_cast<PowerHint_1_0> (hint), data);
+    return powerHint(static_cast<PowerHint_1_0>(hint), data);
 }
 
 }  // namespace implementation
